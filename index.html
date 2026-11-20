@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4f4f2" />
+  <title>WORKTYPE — 나의 커리어 페르소나</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f4f2;
+      --paper: #ffffff;
+      --ink: #171717;
+      --body: #454545;
+      --muted: #858585;
+      --line: #dededb;
+      --soft: #eeeeec;
+      --soft-2: #f8f8f7;
+      --black: #111111;
+      --radius: 20px;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .055);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      letter-spacing: -.035em;
+    }
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid #777; outline-offset: 3px; }
+    .shell { width: min(100% - 40px, 980px); margin: 0 auto; padding: 28px 0 58px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:52px; }
+    .brand { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:900; letter-spacing:.16em; }
+    .brand-mark { width:30px; height:30px; display:grid; place-items:center; background:var(--black); color:#fff; border-radius:9px; font-size:14px; letter-spacing:0; }
+    .top-note { color:var(--muted); font-size:10px; letter-spacing:.13em; }
+    .eyebrow { display:inline-flex; align-items:center; gap:9px; color:#666; font-size:10px; font-weight:850; letter-spacing:.18em; text-transform:uppercase; }
+    .eyebrow::before { content:""; width:18px; height:1px; background:#777; }
+    h1,h2,h3,p { margin-top:0; }
+    .hero { padding:0 0 20px; }
+    h1 { margin:18px 0 15px; font-size:clamp(39px, 7vw, 72px); line-height:1.06; letter-spacing:-.085em; font-weight:900; }
+    h1 span { color:#777; }
+    .hero-intro { max-width:650px; margin:0 0 24px; color:var(--body); font-size:16px; line-height:1.7; }
+    .hero-meta { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px; }
+    .pill { padding:8px 12px; border:1px solid var(--line); border-radius:999px; color:#5f5f5f; background:rgba(255,255,255,.65); font-size:11px; }
+    .type-preview { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:28px 0 30px; }
+    .type-mini { min-height:119px; padding:16px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.72); }
+    .type-mini .symbol { display:block; margin-bottom:13px; color:#333; font-size:19px; }
+    .type-mini strong { display:block; margin-bottom:5px; font-size:13px; }
+    .type-mini span:last-child { color:var(--muted); font-size:11px; line-height:1.5; }
+    .primary-btn,.secondary-btn { min-height:52px; display:inline-flex; align-items:center; justify-content:center; gap:18px; padding:0 22px; border-radius:999px; cursor:pointer; transition:transform .16s ease, background .16s ease, border-color .16s ease; }
+    .primary-btn { border:1px solid var(--black); color:#fff; background:var(--black); font-size:13px; font-weight:800; }
+    .primary-btn:hover { transform:translateY(-2px); background:#333; }
+    .secondary-btn { border:1px solid #bdbdb9; color:var(--ink); background:transparent; font-size:12px; font-weight:750; }
+    .secondary-btn:hover { background:#ececea; border-color:#888; }
+    .btn-arrow { font-size:18px; line-height:1; }
+    .footnote { margin:14px 0 0; color:var(--muted); font-size:11px; line-height:1.6; }
+    .saved-note { display:none; align-items:center; justify-content:space-between; gap:14px; margin:0 0 20px; padding:14px 16px; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .saved-note.show { display:flex; }
+    .saved-note p { margin:0; color:#555; font-size:12px; line-height:1.5; }
+    .saved-note button { flex:0 0 auto; border:0; padding:7px 0; color:#111; background:none; font-size:11px; font-weight:800; text-decoration:underline; cursor:pointer; }
+    .quiz,.result { display:none; }
+    .quiz.active,.result.active { display:block; animation:fadeUp .3s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .quiz-panel { max-width:850px; margin:0 auto; }
+    .quiz-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .step-label { color:var(--muted); font-size:11px; font-weight:750; letter-spacing:.11em; }
+    .step-label strong { color:var(--ink); }
+    .progress-track { width:100%; height:5px; margin-bottom:40px; overflow:hidden; border-radius:20px; background:#dededb; }
+    .progress-fill { width:10%; height:100%; border-radius:20px; background:#171717; transition:width .25s ease; }
+    .question-kicker { margin-bottom:13px; color:#858585; font-size:10px; font-weight:850; letter-spacing:.18em; }
+    .question-title { max-width:730px; margin-bottom:9px; font-size:clamp(25px,4vw,39px); line-height:1.28; letter-spacing:-.065em; }
+    .question-desc { margin-bottom:26px; color:var(--muted); font-size:12px; line-height:1.6; }
+    .answers { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .answer { width:100%; min-height:91px; display:flex; align-items:flex-start; gap:14px; padding:18px; border:1px solid var(--line); border-radius:15px; color:var(--ink); background:#fff; text-align:left; cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .15s ease; }
+    .answer:hover { transform:translateY(-1px); border-color:#8d8d8d; background:#fafafa; }
+    .answer:active { transform:translateY(0); }
+    .answer-key { flex:0 0 27px; width:27px; height:27px; display:grid; place-items:center; border:1px solid #d8d8d5; border-radius:8px; color:#444; background:#f3f3f1; font-size:10px; font-weight:850; }
+    .answer-copy { padding-top:3px; color:#303030; font-size:13px; line-height:1.65; }
+    .quiz-nav { display:flex; justify-content:space-between; align-items:center; margin-top:22px; }
+    .text-btn { padding:8px 0; border:0; color:#777; background:none; font-size:11px; cursor:pointer; }
+    .text-btn:disabled { opacity:.3; cursor:default; }
+    .result { max-width:900px; margin:0 auto; }
+    .result-top { position:relative; padding:8px 0 28px; }
+    .result-topline { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:25px; }
+    .result-kicker { color:#777; font-size:10px; font-weight:850; letter-spacing:.16em; }
+    .saved-stamp { padding:7px 10px; border:1px solid var(--line); border-radius:999px; color:#666; font-size:10px; }
+    .result-title-row { display:flex; align-items:flex-end; gap:20px; }
+    .result-stamp { flex:0 0 70px; width:70px; height:70px; display:grid; place-items:center; border:1px solid #d5d5d2; border-radius:20px; color:#222; background:#ececea; font-size:29px; }
+    .result-top h2 { margin:0 0 5px; font-size:clamp(34px,6vw,58px); line-height:1.08; letter-spacing:-.08em; }
+    .result-subtitle { margin:0; color:#666; font-size:13px; line-height:1.5; }
+    .result-card { padding:clamp(19px,4vw,34px); border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); box-shadow:var(--shadow); }
+    .persona-label { display:inline-block; margin-bottom:13px; padding:7px 10px; border-radius:5px; color:#fff; background:#202020; font-size:10px; font-weight:800; letter-spacing:.08em; }
+    .result-lead { max-width:760px; margin-bottom:23px; color:#333; font-size:16px; line-height:1.8; }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; margin:22px 0 27px; }
+    .insight { min-height:128px; padding:18px; border:1px solid #e4e4e1; border-radius:13px; background:var(--soft-2); }
+    .insight h3,.career-box h3,.collab-box h3 { margin-bottom:9px; color:#666; font-size:10px; font-weight:900; letter-spacing:.13em; }
+    .insight p { margin:0; color:#4c4c4c; font-size:12px; line-height:1.75; }
+    .section-title { display:flex; align-items:center; gap:9px; margin:27px 0 12px; font-size:14px; font-weight:900; letter-spacing:-.03em; }
+    .section-title::before { content:""; width:13px; height:1px; background:#666; }
+    .environment-text { margin:0; color:#555; font-size:12px; line-height:1.8; }
+    .career-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:13px; }
+    .career-box { padding:17px; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .career-box.avoid { background:#f8f8f7; }
+    .career-box h3 { margin-bottom:12px; color:#333; }
+    .career-box.avoid h3 { color:#777; }
+    .career-list { display:grid; gap:9px; margin:0; padding:0; list-style:none; }
+    .career-list li { display:flex; align-items:flex-start; gap:8px; color:#444; font-size:12px; line-height:1.5; }
+    .career-list li::before { content:"+"; color:#111; font-weight:900; }
+    .career-box.avoid .career-list li::before { content:"–"; color:#999; }
+    .career-caption { margin:12px 0 0; color:#888; font-size:10px; line-height:1.6; }
+    .collab-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .collab-box { padding:17px; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .collab-box h3 { color:#333; }
+    .collab-item { padding-top:10px; margin-top:10px; border-top:1px solid #e9e9e7; }
+    .collab-item:first-of-type { margin-top:0; padding-top:0; border-top:0; }
+    .collab-item strong { display:block; margin-bottom:4px; color:#222; font-size:12px; }
+    .collab-item p { margin:0; color:#666; font-size:11px; line-height:1.65; }
+    .score-area { margin-top:27px; padding-top:21px; border-top:1px solid var(--line); }
+    .score-heading { margin:0 0 15px; font-size:13px; font-weight:900; }
+    .score-row { display:grid; grid-template-columns:82px 1fr 24px; gap:10px; align-items:center; margin:12px 0; }
+    .score-name { color:#666; font-size:10px; }
+    .score-bar { height:7px; overflow:hidden; border-radius:10px; background:#ececea; }
+    .score-bar span { display:block; height:100%; border-radius:10px; background:#222; }
+    .score-value { color:#555; font-size:10px; text-align:right; font-variant-numeric:tabular-nums; }
+    .result-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:9px; margin-top:22px; }
+    .disclaimer { max-width:680px; margin:18px auto 0; color:#888; font-size:10px; line-height:1.7; text-align:center; }
+    .site-footer { display:flex; justify-content:space-between; gap:12px; margin-top:50px; padding-top:17px; border-top:1px solid #dededb; color:#969696; font-size:9px; letter-spacing:.1em; }
+    @media (max-width:680px) {
+      .shell { width:min(100% - 28px, 540px); padding-top:18px; }
+      .topbar { margin-bottom:35px; }
+      .top-note { font-size:9px; text-align:right; }
+      .hero-intro { font-size:14px; }
+      .type-preview { grid-template-columns:1fr 1fr; gap:8px; }
+      .type-mini { min-height:104px; padding:14px; }
+      .quiz-head { margin-bottom:10px; }
+      .progress-track { margin-bottom:31px; }
+      .answers { grid-template-columns:1fr; gap:9px; }
+      .answer { min-height:0; padding:15px; }
+      .answer-copy { font-size:12px; }
+      .result-title-row { align-items:center; gap:13px; }
+      .result-stamp { flex-basis:56px; width:56px; height:56px; border-radius:16px; font-size:23px; }
+      .result-grid,.career-grid,.collab-grid { grid-template-columns:1fr; }
+      .insight { min-height:0; }
+      .result-lead { font-size:14px; }
+      .result-card { padding:18px; }
+      .result-actions { display:grid; grid-template-columns:1fr; }
+      .result-actions button { width:100%; }
+      .saved-note { align-items:flex-start; }
+      .site-footer { margin-top:35px; flex-direction:column; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">W</span><span>WORKTYPE</span></div>
+      <div class="top-note">CAREER PERSONA TEST · 10 QUESTIONS</div>
+    </header>
+
+    <section class="hero" id="intro">
+      <div class="saved-note" id="savedNote">
+        <p><strong>저장된 진단 결과가 있습니다.</strong><br><span id="savedDateText">지난 결과를 다시 확인할 수 있어요.</span></p>
+        <button id="viewSavedBtn" type="button">저장 결과 보기 →</button>
+      </div>
+      <div class="eyebrow">Find your work identity</div>
+      <h1>나는 어떤 방식으로<br><span>일하는 사람</span>일까?</h1>
+      <p class="hero-intro">10개의 선택으로 발견하는 나의 일하는 방식. 강점부터 어울리는 직무, 함께 일할 때의 궁합까지 확인해 보세요.</p>
+      <div class="hero-meta">
+        <span class="pill">약 3분</span><span class="pill">10개 문항</span><span class="pill">4가지 페르소나</span>
+      </div>
+      <div class="type-preview" aria-label="진단 결과 유형">
+        <div class="type-mini"><span class="symbol">✳</span><strong>아이디어 탐험가</strong><span>새로운 가능성을 발견하는 사람</span></div>
+        <div class="type-mini"><span class="symbol">▦</span><strong>전략 설계자</strong><span>복잡한 문제를 구조화하는 사람</span></div>
+        <div class="type-mini"><span class="symbol">◎</span><strong>관계 큐레이터</strong><span>사람과 관점을 연결하는 사람</span></div>
+        <div class="type-mini"><span class="symbol">↗</span><strong>실행 엔진</strong><span>생각을 결과로 만드는 사람</span></div>
+      </div>
+      <button class="primary-btn" id="startBtn" type="button">테스트 시작하기 <span class="btn-arrow">→</span></button>
+      <p class="footnote">※ 정답은 없습니다. 가장 이상적인 모습보다 평소의 나와 가까운 선택지를 골라주세요.</p>
+    </section>
+
+    <section class="quiz" id="quiz" aria-live="polite">
+      <div class="quiz-panel">
+        <div class="quiz-head"><div class="step-label">QUESTION <strong id="currentNum">01</strong> / 10</div><div class="step-label" id="progressPercent">10% 완료</div></div>
+        <div class="progress-track" role="progressbar" aria-label="진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" id="progressTrack"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="question-kicker" id="questionKicker">WORK STYLE</div>
+        <h2 class="question-title" id="questionTitle"></h2>
+        <p class="question-desc">가장 평소의 나와 가까운 선택지를 하나 골라주세요.</p>
+        <div class="answers" id="answers"></div>
+        <div class="quiz-nav">
+          <button class="text-btn" id="prevBtn" type="button" disabled>← 이전 문항</button>
+          <button class="text-btn" id="restartBtn" type="button">처음부터 다시</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="result" id="result" aria-live="polite">
+      <div class="result-top">
+        <div class="result-topline"><span class="result-kicker">YOUR CAREER PERSONA</span><span class="saved-stamp" id="savedStamp">RESULT SAVED</span></div>
+        <div class="result-title-row">
+          <div class="result-stamp" id="resultSymbol">✳</div>
+          <div><h2 id="resultName">아이디어 탐험가</h2><p class="result-subtitle" id="resultTagline"></p></div>
+        </div>
+      </div>
+      <div class="result-card">
+        <span class="persona-label" id="personaLabel">THE EXPLORER</span>
+        <p class="result-lead" id="resultLead"></p>
+        <div class="result-grid">
+          <div class="insight"><h3>YOUR STRENGTH · 강점</h3><p id="strengthText"></p></div>
+          <div class="insight"><h3>WATCH OUT · 유의할 점</h3><p id="cautionText"></p></div>
+        </div>
+        <h3 class="section-title">잘 맞는 업무 환경</h3>
+        <p class="environment-text" id="environmentText"></p>
+
+        <h3 class="section-title">추천 직무와 비추천 직무</h3>
+        <div class="career-grid">
+          <div class="career-box"><h3>RECOMMENDED · 추천 직무 3</h3><ul class="career-list" id="recommendList"></ul></div>
+          <div class="career-box avoid"><h3>LESS FIT · 상대적으로 덜 맞는 직무 3</h3><ul class="career-list" id="avoidList"></ul></div>
+        </div>
+        <p class="career-caption">비추천 직무는 역량이 부족하다는 뜻이 아니라, 현재 성향 기준으로 업무 만족도나 에너지 효율이 낮을 수 있다는 의미입니다.</p>
+
+        <h3 class="section-title">함께 일할 때의 궁합</h3>
+        <div class="collab-grid">
+          <div class="collab-box"><h3>SYNERGY · 효율이 높아지는 조합</h3><div id="synergyList"></div></div>
+          <div class="collab-box"><h3>ALIGNMENT · 조율이 필요한 조합</h3><div id="alignmentList"></div></div>
+        </div>
+        <div class="score-area">
+          <h3 class="score-heading">나의 성향 분포</h3>
+          <div id="scoreBars"></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="primary-btn" id="downloadBtn" type="button">결과 이미지 다운로드 <span class="btn-arrow">↓</span></button>
+        <button class="secondary-btn" id="copyBtn" type="button">결과 요약 복사</button>
+        <button class="secondary-btn" id="retryBtn" type="button">다시 테스트하기 ↻</button>
+      </div>
+      <p class="disclaimer">이 테스트는 자기이해와 커리어 탐색을 돕기 위한 참고 도구입니다. 특정 직업의 적합성이나 업무 성과를 과학적으로 판정하는 검사는 아니며, 실제 진로 선택 시 경험·역량·관심·조직 환경을 함께 고려해 주세요. 결과는 이 브라우저의 로컬 저장소에 저장됩니다.</p>
+    </section>
+
+    <footer class="site-footer"><span>WORKTYPE © CAREER PERSONA TEST</span><span>KNOW YOUR WORK, SHAPE YOUR CAREER.</span></footer>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'worktype:lastResult:v2';
+    const typeOrder = ['explorer', 'analyst', 'connector', 'driver'];
+    const types = {
+      explorer: {
+        name: '아이디어 탐험가', shortName: '개척가형', symbol: '✳', code: 'THE EXPLORER', tagline: '아무도 묻지 않은 질문으로 새로운 판을 여는 사람',
+        lead: '익숙한 답을 그대로 따르기보다 “다른 방법은 없을까?”를 먼저 떠올립니다. 불확실한 상황에서도 가능성을 발견하고, 서로 다른 정보와 관점을 연결해 새로운 시도를 제안하는 데 에너지를 얻습니다. 특히 문제를 처음 정의하거나 아직 만들어지지 않은 것을 기획하는 순간에 강점이 드러납니다.',
+        strength: '호기심과 관찰력이 좋고, 서로 다른 정보를 연결해 새로운 관점을 만듭니다. 변화에 유연하며 초기 기획, 기회 발굴, 문제 정의 단계에서 강점을 보입니다.',
+        caution: '가능성을 많이 발견하는 만큼 우선순위가 흔들리거나 일을 크게 벌일 수 있습니다. 아이디어를 좁히는 기준과 완료 시점을 먼저 정하면 강점이 결과로 이어집니다.',
+        environment: '정해진 답을 반복하기보다 실험과 개선이 허용되는 환경, 신규 사업이나 브랜드·서비스 경험을 만들어가는 팀과 잘 맞습니다. 자율성과 시도할 여지가 중요합니다.',
+        recommended: ['신사업·사업개발 기획', '브랜드·서비스 기획', '콘텐츠·캠페인 기획'],
+        avoid: ['정형 데이터 입력·단순 검수', '변화가 거의 없는 반복 운영', '매뉴얼 중심의 단순 처리 업무'],
+        synergy: [
+          ['전략 설계자', '발산한 아이디어를 근거와 기준으로 검토해 실행 가능한 가설로 좁혀줍니다.'],
+          ['실행 엔진', '좋은 아이디어를 빠른 실험과 결과물로 연결해 추진력을 보완합니다.']
+        ],
+        alignment: [
+          ['아이디어 탐험가', '함께 일하면 발상이 풍부해지지만 범위가 계속 넓어질 수 있습니다. 우선순위와 종료 기준을 먼저 합의하세요.'],
+          ['관계 큐레이터', '다양한 의견을 반영하는 과정에서 결정이 늦어질 수 있습니다. 의견 수렴 기간과 최종 결정자를 정하면 좋습니다.']
+        ]
+      },
+      analyst: {
+        name: '전략 설계자', shortName: '분석가형', symbol: '▦', code: 'THE STRATEGIST', tagline: '복잡한 문제에서 핵심 원리와 답을 찾아내는 사람',
+        lead: '상황을 빠르게 단정하기보다 정보를 모으고 구조를 파악한 뒤 판단합니다. 복잡하게 얽힌 문제를 논리적으로 정리하고, 근거를 바탕으로 더 나은 선택을 만드는 과정에서 만족감을 느낍니다. 감보다 이유와 기준을 중시하며 의사결정의 빈틈을 찾아내는 편입니다.',
+        strength: '정보를 체계화하고 핵심 원인을 찾는 데 강점이 있습니다. 꼼꼼한 검토와 논리적인 판단으로 의사결정의 완성도와 신뢰도를 높입니다.',
+        caution: '충분한 근거를 찾으려다 결정과 실행이 늦어질 수 있습니다. 모든 정보를 확보하기보다 현재 결정에 필요한 최소 기준을 정하고 작은 단위로 검증해 보세요.',
+        environment: '목표와 평가 기준이 명확하고, 데이터와 전문성을 바탕으로 깊이 있게 일할 수 있는 환경과 잘 맞습니다. 집중할 시간과 논리적으로 의견을 나누는 문화가 중요합니다.',
+        recommended: ['사업·전략 분석', '시장·고객 리서치', '데이터·성과 분석'],
+        avoid: ['즉흥 대응이 대부분인 현장 업무', '근거보다 관계 형성이 우선인 대외 영업', '기준 없이 우선순위가 자주 바뀌는 업무'],
+        synergy: [
+          ['아이디어 탐험가', '새로운 관점과 질문을 제공해 분석의 출발점을 넓혀줍니다.'],
+          ['관계 큐레이터', '분석 결과가 실제 사람과 조직의 선택으로 이어지도록 소통과 합의를 돕습니다.']
+        ],
+        alignment: [
+          ['전략 설계자', '검토의 깊이가 더해지는 대신 분석이 길어질 수 있습니다. 의사결정 마감과 필요한 정확도를 함께 정하세요.'],
+          ['실행 엔진', '속도와 검토 수준에서 차이가 날 수 있습니다. 실행 전 반드시 확인할 핵심 리스크만 합의하면 균형을 잡을 수 있습니다.']
+        ]
+      },
+      connector: {
+        name: '관계 큐레이터', shortName: '연결가형', symbol: '◎', code: 'THE CONNECTOR', tagline: '사람과 관점 사이에 길을 내는 협업의 중심',
+        lead: '일을 잘 해내는 것만큼 함께 일하는 사람들의 생각과 감정을 중요하게 여깁니다. 서로 다른 입장을 이해하고 공통의 목표를 찾는 데 능숙하며, 사람과 조직 사이의 정보가 잘 흐르도록 돕는 과정에서 보람을 느낍니다.',
+        strength: '상대의 필요를 파악하고 복잡한 의견을 조율하는 데 강점이 있습니다. 신뢰를 쌓고 협업을 이끌며, 고객과 조직 사이의 접점을 만드는 데 능숙합니다.',
+        caution: '모두를 만족시키려다 자신의 의견이나 우선순위를 뒤로 미룰 수 있습니다. 필요한 순간에는 기준을 분명히 말하고, 갈등을 해결의 과정으로 다뤄보세요.',
+        environment: '다양한 사람과 협업하고 의견을 주고받는 환경, 고객이나 구성원의 경험을 개선하는 업무와 잘 맞습니다. 열린 소통과 역할·책임의 명확성이 중요합니다.',
+        recommended: ['HR·조직문화 기획', '고객경험(CX)·서비스 기획', '파트너십·커뮤니티 매니저'],
+        avoid: ['협업 접점이 거의 없는 고립형 업무', '장시간 반복되는 단순 정밀 검수', '조율 권한 없이 갈등만 떠안는 업무'],
+        synergy: [
+          ['실행 엔진', '의견을 정리하고 이해관계자를 연결하면 실행 엔진이 빠르게 행동으로 옮길 수 있습니다.'],
+          ['전략 설계자', '논리와 데이터를 바탕으로 대화의 기준을 세워 합의의 질을 높여줍니다.']
+        ],
+        alignment: [
+          ['관계 큐레이터', '서로 배려하는 분위기는 좋지만 합의에 시간이 오래 걸릴 수 있습니다. 결정 시점과 책임자를 정해두세요.'],
+          ['아이디어 탐험가', '새로운 제안이 계속 늘면 모두를 반영하려다 방향이 흐려질 수 있습니다. 핵심 이해관계자와 우선순위를 구분하세요.']
+        ]
+      },
+      driver: {
+        name: '실행 엔진', shortName: '추진가형', symbol: '↗', code: 'THE DRIVER', tagline: '생각을 행동으로 바꾸고 끝내 결과를 만드는 사람',
+        lead: '생각을 오래 붙잡기보다 일단 움직이며 답을 찾아갑니다. 목표가 정해지면 필요한 일을 나누고 실행하며, 실제 변화와 성과가 만들어지는 순간 큰 동기부여를 얻습니다. 막히는 상황에서도 대안을 찾고 마무리까지 책임지려는 편입니다.',
+        strength: '실행력과 책임감이 높고, 목표를 구체적인 행동으로 전환하는 데 강합니다. 일이 막혀도 대안을 찾고 마감과 결과를 책임지려는 성향이 있습니다.',
+        caution: '속도를 중시하다 보면 충분한 의견 수렴이나 세부 검토를 놓칠 수 있습니다. 시작 전 핵심 리스크를 확인하고, 중간 점검 시간을 의도적으로 확보하면 결과의 완성도가 높아집니다.',
+        environment: '목표와 권한이 명확하고 실행 결과를 빠르게 확인할 수 있는 환경과 잘 맞습니다. 프로젝트 단위의 업무, 현장 문제 해결, 높은 주도성이 필요한 팀에서 강점을 발휘합니다.',
+        recommended: ['프로젝트 매니저(PM)', '사업 운영·프로세스 개선', '영업·그로스 마케팅'],
+        avoid: ['장기간 독립적으로 수행하는 순수 탐구 업무', '합의만 반복되고 결정권이 불명확한 업무', '결과 피드백이 거의 없는 단순 반복 업무'],
+        synergy: [
+          ['전략 설계자', '실행 전 리스크와 판단 기준을 짚어주어 속도와 완성도의 균형을 잡습니다.'],
+          ['관계 큐레이터', '구성원과 이해관계자의 입장을 정리해 실행 과정의 마찰을 줄여줍니다.']
+        ],
+        alignment: [
+          ['아이디어 탐험가', '진행 중 방향이 자주 바뀌면 일정과 자원이 흔들릴 수 있습니다. 변경 요청의 기준과 범위를 합의하세요.'],
+          ['실행 엔진', '추진 속도와 주도권이 겹치면 역할 충돌이 생길 수 있습니다. 담당 영역과 최종 의사결정자를 분명히 하세요.']
+        ]
+      }
+    };
+
+    const questions = [
+      { kicker:'FIRST RESPONSE', title:'새로운 프로젝트를 맡았는데 구체적인 지침이 없다면?', answers:[
+        ['explorer','기존에 없던 접근법을 떠올리고 작은 아이디어부터 제안한다.'],
+        ['analyst','목표와 필요한 정보를 정리해 문제의 구조부터 파악한다.'],
+        ['connector','함께할 사람들의 생각과 기대를 먼저 들어본다.'],
+        ['driver','우선 첫 단계와 마감 일정을 정하고 바로 움직인다.']
+      ]},
+      { kicker:'MOTIVATION', title:'일을 하면서 가장 뿌듯한 순간은 언제인가요?', answers:[
+        ['connector','서로 다른 사람들이 한 방향으로 힘을 모았을 때'],
+        ['driver','내가 맡은 일을 끝까지 해내고 눈에 보이는 결과를 만들었을 때'],
+        ['analyst','복잡했던 문제가 명확하게 이해되고 합리적인 답을 찾았을 때'],
+        ['explorer','누구도 생각하지 못한 새로운 가능성을 발견했을 때']
+      ]},
+      { kicker:'TEAM ROLE', title:'팀 프로젝트에서 자연스럽게 맡게 되는 역할은?', answers:[
+        ['analyst','자료를 정리하고 판단 기준이나 논리를 세우는 역할'],
+        ['explorer','새로운 아이디어를 제안하고 전체 방향을 넓히는 역할'],
+        ['driver','해야 할 일을 나누고 일정에 맞춰 결과를 내는 역할'],
+        ['connector','팀원들의 의견을 듣고 서로의 입장을 조율하는 역할']
+      ]},
+      { kicker:'PROBLEM SOLVING', title:'예상하지 못한 문제가 생겼을 때 나는?', answers:[
+        ['driver','가능한 해결책을 정하고 일단 실행하면서 수정한다.'],
+        ['connector','관련된 사람들과 상황을 공유하고 함께 해결책을 찾는다.'],
+        ['explorer','문제를 다른 관점에서 바라보고 새로운 대안을 떠올린다.'],
+        ['analyst','원인을 나눠 살펴보고 근거를 확인한 뒤 대응한다.']
+      ]},
+      { kicker:'DECISION', title:'중요한 결정을 내려야 할 때 더 믿음이 가는 방식은?', answers:[
+        ['explorer','여러 가능성을 열어두고 가장 끌리는 방향을 작게 시험한다.'],
+        ['analyst','자료와 기준을 비교해 가장 타당한 선택지를 고른다.'],
+        ['connector','영향을 받는 사람들의 의견과 필요를 충분히 고려한다.'],
+        ['driver','결정 시점을 정하고 현재 조건에서 실행 가능한 안을 택한다.']
+      ]},
+      { kicker:'WORK PREFERENCE', title:'다음 중 더 선호하는 업무 방식은?', answers:[
+        ['connector','여러 사람과 자주 소통하며 함께 결과를 만들어가는 방식'],
+        ['explorer','변화가 있고 새로운 주제를 계속 탐색하는 방식'],
+        ['analyst','한 가지 주제를 깊이 파고들며 완성도를 높이는 방식'],
+        ['driver','명확한 목표를 세우고 빠르게 실행·점검하는 방식']
+      ]},
+      { kicker:'FEEDBACK', title:'동료가 나에게 가장 자주 해줄 것 같은 말은?', answers:[
+        ['driver','“말한 건 결국 해내네. 추진력이 좋아.”'],
+        ['analyst','“정리를 정말 잘한다. 덕분에 핵심이 보여.”'],
+        ['connector','“네가 중간에서 잘 연결해 줘서 일이 잘 풀렸어.”'],
+        ['explorer','“생각이 신선해. 그런 관점은 처음이야.”']
+      ]},
+      { kicker:'FRICTION', title:'일을 할 때 상대적으로 답답함을 느끼는 순간은?', answers:[
+        ['analyst','기준이나 근거 없이 감으로만 결정을 내릴 때'],
+        ['driver','결정은 미뤄지고 논의만 길어질 때'],
+        ['explorer','정해진 방식만 고수해 새로운 시도를 막을 때'],
+        ['connector','서로의 입장을 듣지 않고 일방적으로 소통할 때']
+      ]},
+      { kicker:'IDEAL ENVIRONMENT', title:'내가 가장 능력을 발휘할 수 있는 조직은?', answers:[
+        ['explorer','새로운 시도를 환영하고 실패에서 배울 수 있는 조직'],
+        ['connector','서로 신뢰하고 협력하며 함께 성장하는 조직'],
+        ['driver','목표와 권한이 명확하고 실행을 빠르게 지원하는 조직'],
+        ['analyst','전문성을 존중하고 논리와 근거로 토론하는 조직']
+      ]},
+      { kicker:'FUTURE', title:'앞으로 커리어에서 가장 키우고 싶은 능력은?', answers:[
+        ['connector','사람들의 마음을 이해하고 협업을 이끄는 힘'],
+        ['analyst','복잡한 문제를 정확히 분석하고 판단하는 힘'],
+        ['explorer','아직 없는 기회를 발견하고 새로운 가치를 만드는 힘'],
+        ['driver','목표를 실제 성과로 연결하고 완수하는 힘']
+      ]}
+    ];
+
+    let current = 0;
+    let choices = Array(questions.length).fill(null);
+    let activeResult = null;
+    const $ = (id) => document.getElementById(id);
+
+    function showScreen(name) {
+      ['intro','quiz','result'].forEach(id => {
+        const el = $(id);
+        el.classList.toggle('active', id === name);
+        el.style.display = id === name ? 'block' : 'none';
+      });
+      window.scrollTo({ top:0, behavior:'smooth' });
+    }
+
+    function startTest() {
+      current = 0;
+      choices = Array(questions.length).fill(null);
+      showScreen('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[current];
+      const progress = Math.round(((current + 1) / questions.length) * 100);
+      $('currentNum').textContent = String(current + 1).padStart(2,'0');
+      $('progressPercent').textContent = `${progress}% 완료`;
+      $('progressFill').style.width = `${progress}%`;
+      $('progressTrack').setAttribute('aria-valuenow', String(progress));
+      $('questionKicker').textContent = q.kicker;
+      $('questionTitle').textContent = q.title;
+      $('prevBtn').disabled = current === 0;
+      $('answers').innerHTML = '';
+      q.answers.forEach(([type, label], index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'answer';
+        btn.setAttribute('aria-pressed', choices[current] === type ? 'true' : 'false');
+        const key = document.createElement('span');
+        key.className = 'answer-key';
+        key.textContent = String.fromCharCode(65 + index);
+        const copy = document.createElement('span');
+        copy.className = 'answer-copy';
+        copy.textContent = label;
+        btn.append(key, copy);
+        if (choices[current] === type) btn.style.borderColor = '#333';
+        btn.addEventListener('click', () => selectAnswer(type));
+        $('answers').appendChild(btn);
+      });
+    }
+
+    function selectAnswer(type) {
+      choices[current] = type;
+      if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function calculateScores(answerSet = choices) {
+      const scores = { explorer:0, analyst:0, connector:0, driver:0 };
+      answerSet.forEach(type => { if (Object.prototype.hasOwnProperty.call(scores, type)) scores[type]++; });
+      const max = Math.max(...Object.values(scores));
+      const tied = typeOrder.filter(type => scores[type] === max);
+      let winner = tied[0];
+      if (tied.length > 1) {
+        // 동점이면 마지막 문항부터 거슬러 올라가며 동점 유형 중 가장 최근 선택을 우선합니다.
+        for (let i = answerSet.length - 1; i >= 0; i--) {
+          if (tied.includes(answerSet[i])) { winner = answerSet[i]; break; }
+        }
+      }
+      return { scores, winner };
+    }
+
+    function addListItems(containerId, items) {
+      const container = $(containerId);
+      container.innerHTML = '';
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        container.appendChild(li);
+      });
+    }
+
+    function addCollabItems(containerId, items) {
+      const container = $(containerId);
+      container.innerHTML = '';
+      items.forEach(([name, description]) => {
+        const item = document.createElement('div');
+        item.className = 'collab-item';
+        const title = document.createElement('strong');
+        title.textContent = name;
+        const text = document.createElement('p');
+        text.textContent = description;
+        item.append(title, text);
+        container.appendChild(item);
+      });
+    }
+
+    function renderResult(data, isSaved = false) {
+      const type = types[data.winner];
+      if (!type) return;
+      activeResult = data;
+      $('resultSymbol').textContent = type.symbol;
+      $('resultName').textContent = type.name;
+      $('resultTagline').textContent = `${type.shortName} · ${type.tagline}`;
+      $('personaLabel').textContent = type.code;
+      $('resultLead').textContent = type.lead;
+      $('strengthText').textContent = type.strength;
+      $('cautionText').textContent = type.caution;
+      $('environmentText').textContent = type.environment;
+      addListItems('recommendList', type.recommended);
+      addListItems('avoidList', type.avoid);
+      addCollabItems('synergyList', type.synergy);
+      addCollabItems('alignmentList', type.alignment);
+
+      const labels = { explorer:'아이디어 탐험가', analyst:'전략 설계자', connector:'관계 큐레이터', driver:'실행 엔진' };
+      $('scoreBars').innerHTML = '';
+      typeOrder.forEach(key => {
+        const value = data.scores[key] || 0;
+        const row = document.createElement('div');
+        row.className = 'score-row';
+        const name = document.createElement('span'); name.className = 'score-name'; name.textContent = labels[key];
+        const bar = document.createElement('div'); bar.className = 'score-bar';
+        const fill = document.createElement('span'); fill.style.width = `${value / questions.length * 100}%`; bar.appendChild(fill);
+        const score = document.createElement('span'); score.className = 'score-value'; score.textContent = `${value}/10`;
+        row.append(name, bar, score);
+        $('scoreBars').appendChild(row);
+      });
+
+      const savedAt = data.savedAt ? new Date(data.savedAt) : new Date();
+      const dateLabel = Number.isNaN(savedAt.getTime()) ? '저장된 결과' : savedAt.toLocaleString('ko-KR', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+      $('savedStamp').textContent = isSaved ? `SAVED · ${dateLabel}` : `SAVED · ${dateLabel}`;
+      showScreen('result');
+    }
+
+    function showResult() {
+      const { scores, winner } = calculateScores();
+      const data = { version:2, winner, scores, choices:[...choices], savedAt:new Date().toISOString() };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+      catch (error) { console.warn('결과 저장을 사용할 수 없습니다.', error); }
+      renderResult(data, false);
+      updateSavedNote(data);
+    }
+
+    function getSavedResult() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (data?.version !== 2 || !types[data.winner] || !data.scores) return null;
+        const normalizedScores = {};
+        typeOrder.forEach(key => normalizedScores[key] = Math.max(0, Math.min(10, Number(data.scores[key]) || 0)));
+        return { ...data, scores:normalizedScores };
+      } catch (error) {
+        console.warn('저장된 결과를 읽을 수 없습니다.', error);
+        return null;
+      }
+    }
+
+    function updateSavedNote(data) {
+      if (!data) { $('savedNote').classList.remove('show'); return; }
+      const date = new Date(data.savedAt);
+      const dateLabel = Number.isNaN(date.getTime()) ? '이전에 완료한 테스트' : date.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+      $('savedDateText').textContent = `${dateLabel} · ${types[data.winner].name}`;
+      $('savedNote').classList.add('show');
+    }
+
+    function retry() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (error) { console.warn(error); }
+      updateSavedNote(null);
+      startTest();
+    }
+
+    function makeSummary(data) {
+      const type = types[data.winner];
+      const scoreLine = typeOrder.map(key => `${types[key].shortName} ${data.scores[key]}점`).join(' · ');
+      return `[WORKTYPE 커리어 페르소나]\n나의 유형: ${type.name} (${type.shortName})\n${type.tagline}\n\n${type.lead}\n\n추천 직무: ${type.recommended.join(', ')}\n상대적으로 덜 맞는 직무: ${type.avoid.join(', ')}\n\n함께하면 좋은 유형: ${type.synergy.map(item => item[0]).join(', ')}\n조율이 필요한 유형: ${type.alignment.map(item => item[0]).join(', ')}\n\n성향 분포: ${scoreLine}\n\n참고: 자기이해와 커리어 탐색을 위한 참고 결과입니다.`;
+    }
+
+    async function copyResult() {
+      if (!activeResult) return;
+      const summary = makeSummary(activeResult);
+      const btn = $('copyBtn');
+      try {
+        if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(summary);
+        else {
+          const area = document.createElement('textarea');
+          area.value = summary; area.style.position = 'fixed'; area.style.opacity = '0';
+          document.body.appendChild(area); area.select();
+          const ok = document.execCommand('copy'); area.remove();
+          if (!ok) throw new Error('copy failed');
+        }
+        btn.textContent = '복사 완료 ✓';
+      } catch (error) {
+        btn.textContent = '복사할 수 없음';
+      }
+      setTimeout(() => btn.textContent = '결과 요약 복사', 2200);
+    }
+
+    function roundedRect(ctx, x, y, w, h, r, fill, stroke) {
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+    }
+
+    function drawWrapped(ctx, text, x, y, maxWidth, lineHeight, maxLines = 99) {
+      const chars = Array.from(String(text));
+      let line = '', lines = [];
+      for (const char of chars) {
+        const test = line + char;
+        if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = char; }
+        else line = test;
+      }
+      if (line) lines.push(line);
+      if (lines.length > maxLines) {
+        lines = lines.slice(0, maxLines);
+        let last = lines[maxLines - 1];
+        while (last.length && ctx.measureText(last + '…').width > maxWidth) last = last.slice(0, -1);
+        lines[maxLines - 1] = last + '…';
+      }
+      lines.forEach((item, index) => ctx.fillText(item, x, y + index * lineHeight));
+      return y + lines.length * lineHeight;
+    }
+
+    function drawSectionLabel(ctx, text, x, y) {
+      ctx.fillStyle = '#777'; ctx.font = '800 19px Arial, "Noto Sans KR", sans-serif';
+      ctx.fillText(text.toUpperCase(), x, y);
+    }
+
+    async function downloadResultImage() {
+      if (!activeResult) return;
+      const btn = $('downloadBtn');
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = '이미지 만드는 중…';
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+        const data = activeResult;
+        const type = types[data.winner];
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200; canvas.height = 1880;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f4f4f2'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        const M = 76, W = canvas.width - M*2;
+        roundedRect(ctx, 38, 38, 1124, 1804, 26, '#ffffff', '#dededb');
+        ctx.fillStyle = '#151515'; ctx.font = '900 25px Arial, "Noto Sans KR", sans-serif'; ctx.fillText('W  WORKTYPE', M, 103);
+        ctx.fillStyle = '#888'; ctx.font = '700 15px Arial, "Noto Sans KR", sans-serif'; ctx.textAlign = 'right'; ctx.fillText('CAREER PERSONA REPORT', canvas.width-M, 101); ctx.textAlign = 'left';
+        ctx.strokeStyle = '#dededb'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M,132); ctx.lineTo(canvas.width-M,132); ctx.stroke();
+
+        ctx.fillStyle = '#777'; ctx.font = '800 18px Arial, "Noto Sans KR", sans-serif'; ctx.fillText('YOUR WORK IDENTITY', M, 190);
+        ctx.fillStyle = '#171717'; ctx.font = '900 58px Arial, "Noto Sans KR", sans-serif';
+        let y = drawWrapped(ctx, type.name, M, 276, W, 70, 2);
+        ctx.fillStyle = '#606060'; ctx.font = '600 24px Arial, "Noto Sans KR", sans-serif';
+        y = drawWrapped(ctx, type.tagline, M, y + 6, W, 37, 2);
+        roundedRect(ctx, M, y + 18, 235, 42, 8, '#171717', null);
+        ctx.fillStyle = '#fff'; ctx.font = '800 17px Arial, "Noto Sans KR", sans-serif'; ctx.fillText(type.code, M+17, y+45);
+        y += 100;
+
+        ctx.fillStyle = '#333'; ctx.font = '500 22px Arial, "Noto Sans KR", sans-serif';
+        y = drawWrapped(ctx, type.lead, M, y+5, W, 38, 5) + 20;
+        const insightW = (W-18)/2, insightH = 174;
+        roundedRect(ctx, M, y, insightW, insightH, 15, '#f5f5f3', '#e2e2df');
+        roundedRect(ctx, M+insightW+18, y, insightW, insightH, 15, '#f5f5f3', '#e2e2df');
+        drawSectionLabel(ctx, 'YOUR STRENGTH', M+22, y+37);
+        drawSectionLabel(ctx, 'WATCH OUT', M+insightW+40, y+37);
+        ctx.fillStyle = '#4a4a4a'; ctx.font = '500 18px Arial, "Noto Sans KR", sans-serif';
+        drawWrapped(ctx, type.strength, M+22, y+76, insightW-44, 28, 4);
+        drawWrapped(ctx, type.caution, M+insightW+40, y+76, insightW-44, 28, 4);
+        y += insightH + 42;
+
+        drawSectionLabel(ctx, 'RECOMMENDED CAREERS', M, y);
+        drawSectionLabel(ctx, 'LESS FIT FOR YOUR CURRENT STYLE', M+insightW+18, y);
+        const jobY = y+22, jobH = 150;
+        roundedRect(ctx, M, jobY, insightW, jobH, 14, '#fff', '#dededb');
+        roundedRect(ctx, M+insightW+18, jobY, insightW, jobH, 14, '#f8f8f7', '#dededb');
+        ctx.font = '600 21px Arial, "Noto Sans KR", sans-serif'; ctx.fillStyle = '#333';
+        type.recommended.forEach((job,i) => ctx.fillText(`${i+1}.  ${job}`, M+22, jobY+43+i*39));
+        ctx.fillStyle = '#555';
+        type.avoid.forEach((job,i) => ctx.fillText(`${i+1}.  ${job}`, M+insightW+40, jobY+43+i*39));
+        y = jobY + jobH + 40;
+
+        drawSectionLabel(ctx, 'TEAMWORK COMPATIBILITY', M, y);
+        const collabY = y+23, colW = (W-18)/2, collabH = 230;
+        roundedRect(ctx, M, collabY, colW, collabH, 14, '#fff', '#dededb');
+        roundedRect(ctx, M+colW+18, collabY, colW, collabH, 14, '#f8f8f7', '#dededb');
+        drawSectionLabel(ctx, 'SYNERGY', M+20, collabY+35);
+        drawSectionLabel(ctx, 'ALIGNMENT', M+colW+38, collabY+35);
+        let cy = collabY+70;
+        type.synergy.forEach(([name, desc]) => {
+          ctx.fillStyle='#222'; ctx.font='800 20px Arial, "Noto Sans KR", sans-serif'; ctx.fillText(name, M+20, cy);
+          ctx.fillStyle='#666'; ctx.font='500 16px Arial, "Noto Sans KR", sans-serif';
+          drawWrapped(ctx, desc, M+20, cy+27, colW-40, 23, 3); cy += 82;
+        });
+        cy = collabY+70;
+        type.alignment.forEach(([name, desc]) => {
+          ctx.fillStyle='#222'; ctx.font='800 20px Arial, "Noto Sans KR", sans-serif'; ctx.fillText(name, M+colW+38, cy);
+          ctx.fillStyle='#666'; ctx.font='500 16px Arial, "Noto Sans KR", sans-serif';
+          drawWrapped(ctx, desc, M+colW+38, cy+27, colW-40, 23, 3); cy += 82;
+        });
+        y = collabY + collabH + 38;
+
+        drawSectionLabel(ctx, 'MY WORK STYLE BALANCE', M, y);
+        const labelMap = { explorer:'아이디어 탐험가', analyst:'전략 설계자', connector:'관계 큐레이터', driver:'실행 엔진' };
+        typeOrder.forEach((key,i) => {
+          const yy = y+37+i*41, val = data.scores[key] || 0;
+          ctx.fillStyle='#666'; ctx.font='500 17px Arial, "Noto Sans KR", sans-serif'; ctx.fillText(labelMap[key], M, yy+3);
+          roundedRect(ctx, M+190, yy-12, 770, 13, 7, '#ededeb', null);
+          roundedRect(ctx, M+190, yy-12, 770*(val/10), 13, 7, '#222', null);
+          ctx.fillStyle='#444'; ctx.font='700 17px Arial, "Noto Sans KR", sans-serif'; ctx.textAlign='right'; ctx.fillText(`${val}/10`, canvas.width-M, yy+3); ctx.textAlign='left';
+        });
+        ctx.strokeStyle='#dededb'; ctx.beginPath(); ctx.moveTo(M, y+220); ctx.lineTo(canvas.width-M, y+220); ctx.stroke();
+        ctx.fillStyle='#888'; ctx.font='500 15px Arial, "Noto Sans KR", sans-serif';
+        ctx.fillText('WORKTYPE · 자기이해와 커리어 탐색을 위한 참고 결과입니다.', M, y+254);
+        ctx.textAlign='right'; ctx.fillText(new Date(data.savedAt || Date.now()).toLocaleDateString('ko-KR'), canvas.width-M, y+254); ctx.textAlign='left';
+
+        const blob = await new Promise((resolve, reject) => canvas.toBlob(b => b ? resolve(b) : reject(new Error('이미지 생성 실패')), 'image/png'));
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `WORKTYPE_${type.name.replaceAll(' ','_')}_결과.png`;
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      } catch (error) {
+        console.error(error);
+        alert('이미지를 만드는 중 문제가 발생했습니다. 브라우저에서 다시 시도해 주세요.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '결과 이미지 다운로드 <span class="btn-arrow">↓</span>';
+      }
+    }
+
+    $('startBtn').addEventListener('click', startTest);
+    $('prevBtn').addEventListener('click', () => { if (current > 0) { current--; renderQuestion(); } });
+    $('restartBtn').addEventListener('click', startTest);
+    $('retryBtn').addEventListener('click', retry);
+    $('copyBtn').addEventListener('click', copyResult);
+    $('downloadBtn').addEventListener('click', downloadResultImage);
+    $('viewSavedBtn').addEventListener('click', () => {
+      const saved = getSavedResult();
+      if (saved) renderResult(saved, true);
+      else updateSavedNote(null);
+    });
+
+    // 마지막 진단 결과를 저장해두고, 이 파일을 다시 열면 결과 화면을 먼저 보여줍니다.
+    const savedOnLoad = getSavedResult();
+    if (savedOnLoad) {
+      updateSavedNote(savedOnLoad);
+      renderResult(savedOnLoad, true);
+    } else {
+      showScreen('intro');
+    }
+  </script>
+</body>
+</html>
