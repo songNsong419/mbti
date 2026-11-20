@@ -30,6 +30,33 @@
       font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
       letter-spacing: -.035em;
     }
+    /* 첫 화면은 한 톤 더 밝고 가볍게, 테스트·결과 화면은 기존 무채색 톤 유지 */
+    body.landing { background: #fbfaf8; }
+    body.landing .brand-mark { background: #292929; }
+    body.landing .eyebrow { color: #898781; }
+    body.landing .eyebrow::before { background: #b9b6af; }
+    body.landing h1 { color: #292929; }
+    body.landing h1 span { color: #aaa8a2; }
+    body.landing .hero-intro { color: #66635e; }
+    body.landing .pill {
+      border-color: #e9e6e0;
+      color: #77736d;
+      background: rgba(255,255,255,.86);
+    }
+    body.landing .type-mini {
+      border-color: #ebe8e2;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 5px 18px rgba(40,35,25,.018);
+    }
+    body.landing .type-mini .symbol { color: #77746e; }
+    body.landing .type-mini span:last-child { color: #96928b; }
+    body.landing .primary-btn {
+      border-color: #333331;
+      background: #333331;
+    }
+    body.landing .primary-btn:hover { background: #4a4946; }
+    body.landing .footnote { color: #96928b; }
+    body.landing .site-footer { border-color: #e9e6e0; }
     button { font: inherit; }
     button:focus-visible { outline: 3px solid #777; outline-offset: 3px; }
     .shell { width: min(100% - 40px, 980px); margin: 0 auto; padding: 28px 0 58px; }
@@ -155,7 +182,7 @@
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
   </style>
 </head>
-<body>
+<body class="landing">
   <main class="shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">W</span><span>WORKTYPE</span></div>
@@ -387,6 +414,7 @@
     const $ = (id) => document.getElementById(id);
 
     function showScreen(name) {
+      document.body.classList.toggle('landing', name === 'intro');
       ['intro','quiz','result'].forEach(id => {
         const el = $(id);
         el.classList.toggle('active', id === name);
